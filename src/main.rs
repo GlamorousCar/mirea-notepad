@@ -1,44 +1,11 @@
-use std::fmt::Debug;
-// use std;
-use iced::widget::{container, text_editor};
-use iced::{Element, Sandbox, Settings};
+mod editor;
+mod state;
+mod file_handler;
+mod toolbar;
+
+use iced::{Sandbox, Settings};
+use editor::{Editor};
 
 fn main() -> iced::Result {
     Editor::run(Settings::default())
-}
-
-struct Editor {
-    content: text_editor::Content,
-}
-
-#[derive(Debug, Clone)]
-enum Message {
-    Edit(text_editor::Action),
-}
-
-impl Sandbox for Editor {
-    type Message = Message;
-
-    fn new() -> Self {
-        Self {
-            content: text_editor::Content::new(),
-        }
-    }
-
-    fn title(&self) -> String {
-        String::from("Mirea notepad by John Drof")
-    }
-
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::Edit(action) => {
-                self.content.edit(action);
-            }
-        }
-    }
-
-    fn view(&self) -> Element<'_, Message> {
-        let input = text_editor(&self.content).on_edit(Message::Edit);
-        container(input).padding(10).into()
-    }
 }

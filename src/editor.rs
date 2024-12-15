@@ -34,18 +34,17 @@ impl Sandbox for Editor {
     }
 
     fn title(&self) -> String {
-        format!(
-            "{} - Mirea notepad by John Drof",
-            self.state
-                .current_file_name()
-                .unwrap_or("Untitled".to_string())
-        )
+        let modified = if self.state.is_modified() { "*" } else { "" };
+        format!("{}{} - Mirea notepad by John Drof",
+                modified,
+                self.state.current_file_name().unwrap_or("Untitled".to_string()))
     }
 
     fn update(&mut self, message: Message) {
         match message {
             Message::Edit(action) => {
                 self.state.content_mut().edit(action);
+                self.state.record_change();
             }
             Message::New => {
                 self.state.new_file();
@@ -83,15 +82,15 @@ impl Sandbox for Editor {
                 }
             }
             Message::Undo => {
-                // TODO: Implement undo
+                self.state.undo();
             }
             Message::Redo => {
-                // TODO: Implement redo
+                self.state.redo();
             }
         }
     }
     fn view(&self) -> Element<Message> {
-        let toolbar = create_toolbar();
+        let toolbar = create_toolbar(self.state.can_undo(), self.state.can_redo());
 
         let editor = text_editor(self.state.content()).on_edit(Message::Edit);
 

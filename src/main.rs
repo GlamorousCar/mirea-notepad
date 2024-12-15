@@ -2,6 +2,7 @@ mod editor;
 mod state;
 mod file_handler;
 mod toolbar;
+mod history;
 
 use iced::{Sandbox, Settings};
 use editor::{Editor};
